@@ -11,6 +11,8 @@ class ProfileAutomation:
         self.playwright = None
         self.browser = None
         self.page = None
+        self.login_page = None
+        self.profile_page = None
 
     def start(self):
         logger.info("Launching browser...")
@@ -31,6 +33,7 @@ class ProfileAutomation:
         value = task["value"]
 
         if action == "update_profile_name":
+
             self.profile_page.open_profile()
             self.profile_page.update_profile_name(value)
 
@@ -40,11 +43,18 @@ class ProfileAutomation:
 
             if actual == value:
                 logger.info("✅ Validation Passed")
-            else:
-                logger.error("❌ Validation Failed")
+                return True
+
+            logger.error("❌ Validation Failed")
+            
+            return False
 
     def close(self):
+
         logger.info("Closing browser")
 
-        self.browser.close()
-        self.playwright.stop()
+        if self.browser:
+            self.browser.close()
+
+        if self.playwright:
+            self.playwright.stop()
